@@ -206,13 +206,15 @@ void signOutStudent(int student_id, int force) {
       printf("You have been signed out!\n");
     } else {
       printf("You attempted to leave early without permission. The supervisior will be notified\n");
-      FILE *fp = fopen("register.txt", "r");
-  if (fp == NULL) {
-    printf("Register Database could not be found. There is an issue\n");
+      FILE *fp = fopen("delinquent.txt", "a");
+      fprintf (fp, "%d %s %s", s->id, s->first_name,s->last_name);
+      fclose (fp);
+
+
 
     }
-  }
-}
+
+} }
 
 void loadRegisterDatabase() {
   // Load the register database from the file "register.txt"
@@ -273,6 +275,18 @@ int isStudentId(int id) { //Function to check if a student ID is valid
   return 0; // This is not a student
 }
 
+void printDelinquents () {
+  FILE *fp = fopen ("delinquents.txt", "r");
+  Student * student;
+  while (fscanf(fp, "%d %s %s %d", &(student)->id,
+                (student)->first_name,
+                (student)->last_name) == 3) {
+    printf("Loaded Delinquent #%d: %s %s\n", (student)->id,
+           (student)->first_name,
+           (student)->last_name);
+          } fclose (fp);
+}
+
 void manageSupervisorOptionSelected(int option) { //Function to manage the supervisor option selected
 
   int student_id;
@@ -294,9 +308,8 @@ void manageSupervisorOptionSelected(int option) { //Function to manage the super
     break;
   case 4:
     // View delinquents
-            printf("The names of the students are, %s:\n", student.firstname);
+            printDelinquents ();
 
-            printf("The student ID of the delinquents are %s:\n", student_id);
   /** Case 4: Check Notifications
     Looks in the delinquents.txt file and prints out the student ID and name to let the supervisor know that these students tried to leave early without permission.
     **/
@@ -352,6 +365,6 @@ int main(void) { //Main function
 
       scanf("%d", &option);
       manageSupervisorOptionSelected(option);
-    } while (option != 4);
+    } while (option != 5);
   }
 }
